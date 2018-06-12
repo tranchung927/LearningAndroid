@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">DemoForLearning</string>
-    <!--COMPLETED (1) Add a string resource called search with the title "Search"-->
     <string name="search">Search</string>
 </resources>

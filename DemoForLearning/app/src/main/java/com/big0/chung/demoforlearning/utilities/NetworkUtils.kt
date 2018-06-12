@@ -1,5 +1,6 @@
 package com.big0.chung.demoforlearning.utilities
 
+import android.net.Uri
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -24,7 +25,18 @@ class NetworkUtils {
          */
 
         fun buildUrl(githubSearchQuery: String): URL? {
-            return null
+            // COMPLETED (1) Fill in this method to build the proper Github query URL
+            val builtUri = Uri.parse(GITHUB_BASE_URL).buildUpon()
+                    .appendQueryParameter(PARAM_QUERY, githubSearchQuery)
+                    .appendQueryParameter(PARAM_SORT, sortBy)
+                    .build()
+            var url: URL? = null
+            try {
+                url = URL(builtUri.toString())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return url
         }
 
         /**
