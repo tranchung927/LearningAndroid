@@ -5,9 +5,10 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import com.big0.chung.demoforlearning.utilities.NetworkUtils
 import java.net.URL
 
@@ -18,6 +19,12 @@ class MainActivity : AppCompatActivity() {
     lateinit var mUrlDisplayTextView: TextView
     lateinit var mSearchResultsTextView: TextView
 
+    // COMPLETED (12) Create a variable to store a reference to the error message TextView
+    lateinit var mErrorMessageDisplay: TextView
+
+    // COMPLETED (24) Create a ProgressBar variable to store a reference to the ProgressBar
+    lateinit var mLoadingIndicator: ProgressBar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -25,6 +32,12 @@ class MainActivity : AppCompatActivity() {
         mSearchBoxEditText = findViewById(R.id.et_search_box)
         mUrlDisplayTextView = findViewById(R.id.tv_url_display)
         mSearchResultsTextView = findViewById(R.id.tv_github_search_results_json)
+
+        // COMPLETED (13) Get a reference to the error TextView using findViewById
+        mErrorMessageDisplay = findViewById(R.id.tv_error_message_display);
+
+        // COMPLETED (25) Get a reference to the ProgressBar using findViewById
+        mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
     }
 
     /**
@@ -38,15 +51,48 @@ class MainActivity : AppCompatActivity() {
         val githubQuery = mSearchBoxEditText.text.toString()
         val githubSearchUrl = NetworkUtils.buildUrl(githubQuery)
         mUrlDisplayTextView.text = githubSearchUrl.toString()
-        // COMPLETED (4) Create a new GithubQueryTask and call its execute method, passing in the url to query
         GithubQueryTask().execute(githubSearchUrl)
 
     }
 
-    // COMPLETED (1) Create a class called GithubQueryTask that extends AsyncTask<URL, Void, String>
+    // COMPLETED (14) Create a method called showJsonDataView to show the data and hide the error
+    /**
+     * This method will make the View for the JSON data visible and
+     * hide the error message.
+     * <p>
+     * Since it is okay to redundantly set the visibility of a View, we don't
+     * need to check whether each view is currently visible or invisible.
+     */
+    fun showJsonDataView() {
+        // First, make sure the error is invisible
+        mErrorMessageDisplay.visibility = View.INVISIBLE
+        // Then, make sure the JSON data is visible
+        mSearchResultsTextView.visibility = View.VISIBLE
+    }
+
+    // COMPLETED (15) Create a method called showErrorMessage to show the error and hide the data
+    /**
+     * This method will make the error message visible and hide the JSON
+     * View.
+     * <p>
+     * Since it is okay to redundantly set the visibility of a View, we don't
+     * need to check whether each view is currently visible or invisible.
+     */
+
+    fun showErrorMessage() {
+        // First, hide the currently visible data
+        mSearchResultsTextView.visibility = View.INVISIBLE
+        // Then, show the error
+        mErrorMessageDisplay.visibility = View.VISIBLE
+    }
+
     inner class GithubQueryTask(): AsyncTask<URL, Void, String>() {
 
-        // COMPLETED (2) Override the doInBackground method to perform the query. Return the results. (Hint: You've already written the code to perform the query)
+        override fun onPreExecute() {
+            super.onPreExecute()
+            mLoadingIndicator.visibility = View.VISIBLE
+        }
+
         override fun doInBackground(vararg params: URL?): String? {
             val searchUrl = params[0]
             var githubSearchResults: String? = null
@@ -60,10 +106,16 @@ class MainActivity : AppCompatActivity() {
             return githubSearchResults
         }
 
-        // COMPLETED (3) Override onPostExecute to display the results in the TextView
         override fun onPostExecute(result: String?) {
+            // COMPLETED (27) As soon as the loading is complete, hide the loading indicator
+            mLoadingIndicator.visibility = View.INVISIBLE
             if (result != null && !result.equals("")) {
+                // COMPLETED (17) Call showJsonDataView if we have valid, non-null results
+                showJsonDataView()
                 mSearchResultsTextView.text = result
+            } else {
+                // COMPLETED (16) Call showErrorMessage if the result is null in onPostExecute
+                showErrorMessage()
             }
         }
     }
