@@ -25,7 +25,6 @@ class NetworkUtils {
          */
 
         fun buildUrl(githubSearchQuery: String): URL? {
-            // COMPLETED (1) Fill in this method to build the proper Github query URL
             val builtUri = Uri.parse(GITHUB_BASE_URL).buildUpon()
                     .appendQueryParameter(PARAM_QUERY, githubSearchQuery)
                     .appendQueryParameter(PARAM_SORT, sortBy)
