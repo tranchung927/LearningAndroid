@@ -36,6 +36,8 @@ class GreenAdapter(context: Context, val numberOfItems: Int): RecyclerView.Adapt
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NumberViewHolder {
         val view = LayoutInflater.from(parent.context)
+
+        // COMPLETED (14)
         val cell = NumberViewHolder(view.inflate(R.layout.number_list_item, parent, false))
         return cell
     }
@@ -67,8 +69,14 @@ class GreenAdapter(context: Context, val numberOfItems: Int): RecyclerView.Adapt
     /**
      * Cache of the children views for a list item.
      */
+    // COMPLETED (12) Create a class called NumberViewHolder that extends RecyclerView.ViewHolder
+    // COMPLETED (13) Create a constructor for NumberViewHolder that accepts a View called itemView as a parameter
     class NumberViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+
+        // COMPLETED (15) Within the NumberViewHolder class, create a void method called bind that accepts an int parameter called listIndex
         fun bind(listIndex: Int) {
+            // COMPLETED (16) Within bind, set the text of listItemNumberView to the listIndex
+            // COMPLETED (17) Be careful to get the String representation of listIndex, as using setText with an int does something different
             itemView.tv_item_number.text = listIndex.toString()
         }
     }
