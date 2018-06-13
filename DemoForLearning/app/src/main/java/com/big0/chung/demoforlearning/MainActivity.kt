@@ -22,10 +22,7 @@ class MainActivity : AppCompatActivity() {
      */
 
     fun onClickOpenWebpageButton(view: View) {
-        // COMPLETED (5) Create a String that contains a URL ( make sure it starts with http:// or https:// )
         val urlAsString = "http://www.udacity.com"
-
-        // COMPLETED (6) Replace the Toast with a call to openWebPage, passing in the URL String from the previous step
         openWebPage(urlAsString)
     }
 
@@ -37,7 +34,16 @@ class MainActivity : AppCompatActivity() {
      */
 
     fun onClickOpenAddressButton(view: View) {
-        Toast.makeText(this, "TODO: Open a map when this button is clicked", Toast.LENGTH_SHORT).show()
+        // COMPLETED (5) Store an address in a String
+        val addressString = "1600 Amphitheatre Parkway, CA"
+
+        // COMPLETED (6) Use Uri.Builder with the appropriate scheme and query to form the Uri for the address
+        val builder = Uri.Builder()
+        builder.scheme("geo").path("0,0").query(addressString)
+        val addressUri = builder.build()
+
+        // COMPLETED (7) Replace the Toast with a call to showMap, passing in the Uri from the previous step
+        showMap(addressUri)
     }
 
     /**
@@ -64,7 +70,6 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this,"TODO: Create Your Own Implicit Intent", Toast.LENGTH_SHORT).show()
     }
 
-    // COMPLETED (1) Create a method called openWebPage that accepts a String as a parameter
     /**
      * This method fires off an implicit Intent to open a webpage.
      *
@@ -73,26 +78,53 @@ class MainActivity : AppCompatActivity() {
      */
 
     fun openWebPage(url: String) {
-        // COMPLETED (2) Use Uri.parse to parse the String into a Uri
         /*
          * We wanted to demonstrate the Uri.parse method because its usage occurs frequently. You
          * could have just as easily passed in a Uri as the parameter of this method.
          */
         val webpage = Uri.parse(url)
-
-        // COMPLETED (3) Create an Intent with Intent.ACTION_VIEW and the webpage Uri as parameters
         /*
          * Here, we create the Intent with the action of ACTION_VIEW. This action allows the user
          * to view particular content. In this case, our webpage URL.
          */
         val intent = Intent(Intent.ACTION_VIEW, webpage)
-
-        // COMPLETED (4) Verify that this Intent can be launched and then call startActivity
         /*
          * This is a check we perform with every implicit Intent that we launch. In some cases,
          * the device where this code is running might not have an Activity to perform the action
          * with the data we've specified. Without this check, in those cases your app would crash.
          */
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(intent)
+        }
+    }
+
+    // COMPLETED (1) Create a method called showMap with a Uri as the single parameter
+    /**
+     * This method will fire off an implicit Intent to view a location on a map.
+     *
+     * When constructing implicit Intents, you can use either the setData method or specify the
+     * URI as the second parameter of the Intent's constructor,
+     * as I do in {@link #openWebPage(String)}
+     *
+     * @param geoLocation The Uri representing the location that will be opened in the map
+     */
+    fun showMap(geoLocation: Uri) {
+
+        // COMPLETED (2) Create an Intent with action type, Intent.ACTION_VIEW
+        /*
+         * Again, we create an Intent with the action, ACTION_VIEW because we want to VIEW the
+         * contents of this Uri.
+         */
+        val intent = Intent(Intent.ACTION_VIEW)
+
+        // COMPLETED (3) Set the data of the Intent to the Uri passed into this method
+        /*
+         * Using setData to set the Uri of this Intent has the exact same affect as passing it in
+         * the Intent's constructor. This is simply an alternate way of doing this.
+         */
+        intent.setData(geoLocation)
+
+        // COMPLETED (4) Verify that this Intent can be launched and then call startActivity
         if (intent.resolveActivity(packageManager) != null) {
             startActivity(intent)
         }
