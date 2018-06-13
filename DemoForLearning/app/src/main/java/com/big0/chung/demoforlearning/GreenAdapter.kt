@@ -20,10 +20,20 @@ import kotlinx.android.synthetic.main.number_list_item.view.*
  * contents are green.
  */
 
-class GreenAdapter(context: Context, val numberOfItems: Int): RecyclerView.Adapter<GreenAdapter.NumberViewHolder>() {
+class GreenAdapter(context: Context, val numberOfItems: Int, val listener: ListItemClickListener?): RecyclerView.Adapter<GreenAdapter.NumberViewHolder>() {
 
-    // COMPLETED (8) When a new GreenAdapter is created, set the viewHolderCount to 0
     var viewHolderCount = 0
+
+
+    // COMPLETED (1) Add an interface called ListItemClickListener
+    // COMPLETED (2) Within that interface, define a void method called onListItemClick that takes an int as a parameter
+    /**
+     * The interface that receives onClick messages.
+     */
+
+    interface ListItemClickListener {
+        fun onListItemClick(clickedItemIndex: Int)
+    }
 
     /**
      *
@@ -41,14 +51,8 @@ class GreenAdapter(context: Context, val numberOfItems: Int): RecyclerView.Adapt
         val view = LayoutInflater.from(parent.context)
 
         val cell = NumberViewHolder(view.inflate(R.layout.number_list_item, parent, false))
-
-        // COMPLETED (9) Set the text of viewHolderIndex to "ViewHolder index: " + viewHolderCount
         cell.itemView.tv_view_holder_instance.text = "ViewHolder index: " + viewHolderCount
-
-        // COMPLETED (10) Set the background color of viewHolder.itemView with the color from above
         cell.itemView.setBackgroundColor(ColorUtils.getViewHolderBackgroundColorFromInstance(parent.context, viewHolderCount))
-
-        // COMPLETED (11) Increment viewHolderCount and log its value
         viewHolderCount ++
         return cell
     }
@@ -75,6 +79,10 @@ class GreenAdapter(context: Context, val numberOfItems: Int): RecyclerView.Adapt
      */
     override fun onBindViewHolder(holder: NumberViewHolder, position: Int) {
         holder.bind(position)
+        // COMPLETED (3)
+        holder.itemView.setOnClickListener {
+            listener?.onListItemClick(position)
+        }
     }
 
     /**
