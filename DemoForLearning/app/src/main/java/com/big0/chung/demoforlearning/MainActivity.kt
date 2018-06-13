@@ -39,12 +39,12 @@ class MainActivity : AppCompatActivity() {
         val githubSearchUrl = NetworkUtils.buildUrl(githubQuery)
         mUrlDisplayTextView.text = githubSearchUrl.toString()
         // COMPLETED (4) Create a new GithubQueryTask and call its execute method, passing in the url to query
-        GithubQueryTask(this).execute(githubSearchUrl)
+        GithubQueryTask().execute(githubSearchUrl)
 
     }
 
     // COMPLETED (1) Create a class called GithubQueryTask that extends AsyncTask<URL, Void, String>
-    class GithubQueryTask(val context: MainActivity): AsyncTask<URL, Void, String>() {
+    inner class GithubQueryTask(): AsyncTask<URL, Void, String>() {
 
         // COMPLETED (2) Override the doInBackground method to perform the query. Return the results. (Hint: You've already written the code to perform the query)
         override fun doInBackground(vararg params: URL?): String? {
@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         // COMPLETED (3) Override onPostExecute to display the results in the TextView
         override fun onPostExecute(result: String?) {
             if (result != null && !result.equals("")) {
-                context.mSearchResultsTextView.text = result
+                mSearchResultsTextView.text = result
             }
         }
     }
