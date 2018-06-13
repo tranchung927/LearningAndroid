@@ -1,5 +1,6 @@
 package com.big0.chung.demoforlearning
 
+import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -8,6 +9,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import com.big0.chung.demoforlearning.utilities.NetworkUtils
+import java.net.URL
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,19 +38,36 @@ class MainActivity : AppCompatActivity() {
         val githubQuery = mSearchBoxEditText.text.toString()
         val githubSearchUrl = NetworkUtils.buildUrl(githubQuery)
         mUrlDisplayTextView.text = githubSearchUrl.toString()
+        // COMPLETED (4) Create a new GithubQueryTask and call its execute method, passing in the url to query
+        GithubQueryTask(this).execute(githubSearchUrl)
 
-        // COMPLETED (2) Call getResponseFromHttpUrl and display the results in mSearchResultsTextView
-        // COMPLETED (3) Surround the call to getResponseFromHttpUrl with a try / catch block to catch an IO Exception
-        var githubSearchResults: String? = null
-        if (githubSearchUrl != null) {
-            try {
-                githubSearchResults = NetworkUtils.getResponseFromHttpUrl(githubSearchUrl)
-                mSearchResultsTextView.text = githubSearchResults
-            } catch (e: Exception) {
-                e.printStackTrace()
+    }
+
+    // COMPLETED (1) Create a class called GithubQueryTask that extends AsyncTask<URL, Void, String>
+    class GithubQueryTask(val context: MainActivity): AsyncTask<URL, Void, String>() {
+
+        // COMPLETED (2) Override the doInBackground method to perform the query. Return the results. (Hint: You've already written the code to perform the query)
+        override fun doInBackground(vararg params: URL?): String? {
+            val searchUrl = params[0]
+            var githubSearchResults: String? = null
+            if (searchUrl != null) {
+                try {
+                    githubSearchResults = NetworkUtils.getResponseFromHttpUrl(searchUrl)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            return githubSearchResults
+        }
+
+        // COMPLETED (3) Override onPostExecute to display the results in the TextView
+        override fun onPostExecute(result: String?) {
+            if (result != null && !result.equals("")) {
+                context.mSearchResultsTextView.text = result
             }
         }
     }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         return true
